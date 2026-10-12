@@ -1,0 +1,83 @@
+/* ==========================================================================
+   Motion. One orchestrated opening, then quiet photographic reveals.
+   Everything here is skipped for visitors who prefer reduced motion,
+   and nothing is hidden at all if JavaScript does not run (.js class).
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ---- The opening: a tissue guard lifts from the portrait plate ---- */
+  .js .tissue {
+    display: block;
+    position: absolute; inset: 0;
+    background: var(--ivory);
+    opacity: .92;
+    clip-path: inset(0 0 0 0);
+    animation: tissue-lift 1500ms var(--ease) 250ms forwards;
+  }
+  .js .plate--hero img {
+    animation: plate-settle 1900ms var(--ease) both;
+  }
+  .js .title-page > * {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: rise 800ms var(--ease) forwards;
+  }
+  .js .title-page > :nth-child(1) { animation-delay: 700ms; }
+  .js .title-page > :nth-child(2) { animation-delay: 850ms; }
+  .js .title-page > :nth-child(3) { animation-delay: 1150ms; }
+  .js .title-page > :nth-child(4) { animation-delay: 1300ms; }
+  .js .title-page > :nth-child(5) { animation-delay: 1400ms; }
+  .js .title-page > :nth-child(6) { animation-delay: 1750ms; }
+
+  .begin span {
+    transform-origin: top;
+    animation: draw 2600ms var(--ease) 2400ms infinite;
+  }
+
+  /* ---- Photographs develop gently as they arrive ---- */
+  .js .reveal-photo img {
+    opacity: 0;
+    clip-path: inset(6% 0 0 0);
+    transition: opacity 1000ms var(--ease), clip-path 1100ms var(--ease);
+  }
+  .js .reveal-photo figcaption {
+    opacity: 0;
+    transition: opacity 700ms var(--ease) 300ms;
+  }
+  .js .reveal-photo.is-in img { opacity: 1; clip-path: inset(0 0 0 0); }
+  .js .reveal-photo.is-in figcaption { opacity: 1; }
+  /* hover dims after reveal, without fighting the transition above */
+  .js .reveal-photo.reveal-done img { transition: opacity .3s var(--ease); }
+
+  /* ---- The running head's chapter title crossfades ---- */
+  .running-head__chapter { transition: opacity 300ms var(--ease); }
+  .running-head__chapter.is-changing { opacity: 0; }
+
+  /* ---- Viewer ---- */
+  .viewer[open] { animation: fade 350ms var(--ease); }
+  .viewer__figure img.is-loading { opacity: 0; }
+  .viewer__figure img { transition: opacity 350ms var(--ease); }
+
+  /* ---- Newly kept memory settles onto the wall ---- */
+  .note--arriving { animation: rise 700ms var(--ease) both; }
+}
+
+@keyframes tissue-lift {
+  to { clip-path: inset(0 0 100% 0); opacity: .6; }
+}
+@keyframes plate-settle {
+  from { transform: scale(1.03); }
+  to   { transform: scale(1); }
+}
+@keyframes rise {
+  to { opacity: 1; transform: none; }
+}
+@keyframes draw {
+  0%   { transform: scaleY(0); opacity: 1; }
+  60%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+@keyframes fade {
+  from { opacity: 0; }
+}
