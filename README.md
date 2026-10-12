@@ -4,6 +4,10 @@ A single-page digital memorial for Antonia Tidyman (born 6 January 1955, Siġġi
 
 It is a **static website**: HTML, CSS and vanilla JavaScript. There's no framework, no build step, no server, no database and no tracking.
 
+**Live address:** https://teamdigitalmarketersperth.github.io/antonia-tidyman/
+**Source:** https://github.com/teamdigitalmarketersperth/antonia-tidyman (hosted free on GitHub Pages)
+**QR code:** `print/antonia-memorial-qr.svg` (vector, for the printer) and `print/antonia-memorial-qr.png` (2120 px)
+
 ---
 
 ## 1. Preview it
@@ -16,22 +20,40 @@ python -m http.server 8000
 # then open http://localhost:8000
 ```
 
-## 2. Publish it
+## 2. Hosting and updating (GitHub Pages)
 
-Upload the whole folder (`index.html`, `css/`, `js/`, `assets/`) to any static host. There is no build command, and the output folder is the project root.
+The site is published from the `main` branch of the GitHub repository. **Every push to `main` updates the live site** within a minute or two:
 
-- **Netlify:** drag the folder onto app.netlify.com/drop
-- **Cloudflare Pages / GitHub Pages / Vercel:** point the host at this folder
-- **Ordinary web hosting:** upload by FTP into the public folder
+```bash
+git add -A
+git commit -m "Add service details"
+git push
+```
 
-### After it is live (in this order)
+You can also edit files directly on github.com (open a file and click the pencil icon). Saving the change publishes it.
 
-1. **Confirm the permanent address**, ideally a domain the family owns (e.g. `antoniatidyman.com.au`), so the printed QR codes never break.
-2. In `js/main.js`, set `MEMORIAL_URL` to that address.
-3. In `index.html`, make `og:image` a full address and add an `og:url` line (the comment above them explains how). This gives a proper preview card in WhatsApp and Messages.
-4. **Generate the QR code** from that exact address, using any reputable generator, or `npx qrcode -o qr.png "https://…"`. Test-scan it on two phones before sending anything to print.
+### The permanent address and the QR code
 
-No QR code has been generated yet, because the final address isn't known. A QR code pointing at a temporary address would break when the address changes.
+- The address `https://teamdigitalmarketersperth.github.io/antonia-tidyman/` is set in three places: `MEMORIAL_URL` in `js/main.js`, and the `canonical` and `og:` tags near the top of `index.html`.
+- The QR code in `print/` points to that exact address. It uses the highest error correction (level H, version 7), so it still scans if part of it is scratched or weathered. It was verified by decoding it back to the address.
+- **Don't rename the repository or the GitHub account.** Either one changes the address and breaks every printed QR code.
+- **Printing:** keep it at least **2.5 cm (1 inch)** square, dark on a light background, with the white margin intact. On a headstone plaque, ask the engraver for a high-contrast, weatherproof finish, and test-scan the proof with two different phones before it is made.
+
+### Optional: a custom domain
+
+If the family would like a shorter address (e.g. `antoniatidyman.com.au`), buy the domain and add it under *Settings, then Pages, then Custom domain* in the repository. Do this **before** anything is printed: then update the three places above and regenerate the QR code:
+
+```bash
+pip install segno
+python -c "import segno; q=segno.make_qr('https://NEW-ADDRESS/', error='h'); q.save('print/antonia-memorial-qr.svg', dark='#292925', border=4, scale=10); q.save('print/antonia-memorial-qr.png', dark='#292925', border=4, scale=40)"
+```
+
+### Previewing changes on your computer
+
+```bash
+python -m http.server 8000
+# then open http://localhost:8000
+```
 
 ---
 
@@ -119,7 +141,7 @@ The page doesn't invent anything. Before it goes live, please confirm:
 - [ ] **Real tributes** to replace the three samples.
 - [ ] **Music file**, and permission to use it.
 - [ ] **Family email** (optional) and/or a form service for memories.
-- [ ] **Permanent web address**, then the QR code.
+- [x] **Permanent web address** and QR code: done (GitHub Pages address). A custom domain is optional; see section 2.
 - [ ] **Photo captions**: names, places and years, if wanted.
 - [ ] **Quotations in Antonia's own words**: both are verbatim from her author page at maltabook.com.au ("Sharing nice dinners…" and "It is my hope that my children…"). Please confirm the family is happy to use them.
 - [ ] **Pull quote** "No matter how difficult life became, she always found a way to make things happen." is from the family's obituary in the program. It is credited to the family, not to Antonia.
@@ -143,6 +165,7 @@ js/music.js            Music control (hidden until a file is set)
 assets/images/         WebP photographs (-sm / -lg) and the sharing image
 assets/audio/          Put the music file here
 assets/icons/          Favicon
+print/                 QR code for printing (SVG and PNG). Not used by the page
 ```
 
 External resources: Google Fonts only (EB Garamond, Manrope). Full-size original photographs are in the earlier project at `D:\For-After Landing Page\assets\images\originals\`; this site doesn't need them.
@@ -165,7 +188,7 @@ External resources: Google Fonts only (EB Garamond, Manrope). Full-size original
 
 ## 7. Accessibility and quality checks done
 
-Tested in Chrome (headless, via Puppeteer) at 360, 390, 768, 1024, 1440 and 1920 px: no horizontal overflow and no console errors. Automated checks passed for:
+Tested in Chrome (headless, via Puppeteer) at 360, 390, 768, 1024, 1440 and 1920 px, then again on the live GitHub Pages site (all images and fonts load over HTTPS, no failed requests, share copies the permanent address): no horizontal overflow and no console errors. Automated checks passed for:
 
 - the skip link;
 - the photo viewer: open, arrows, wrap-around, swipe, Esc, and focus returning to the photo;
